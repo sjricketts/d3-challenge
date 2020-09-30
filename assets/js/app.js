@@ -13,7 +13,7 @@ var margin = {
   left: 100,
 };
 
-
+// adjust container considering margins
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
@@ -33,48 +33,38 @@ var chartGroup = svg.append("g")
 
 // Import Data
 d3.csv("assets/data/data.csv").then(function(censusData) {
-    console.log(censusData);
-    censusData.forEach(function(data) {
-      data.poverty = +data.poverty;
-      data.healthcare = +data.healthcare;
-    });
-  
+  // console.log(censusData);
+  censusData.forEach(function (data) {
+    data.poverty = +data.poverty;
+    data.healthcare = +data.healthcare;
+  });
+
+  // Scale Functions
+  var xLinearScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(censusData, (d) => d.poverty)])
+    .range([0, width]);
+
+  var yLinearScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(censusData, (d) => d.healthcare)])
+    .range([height, 0]);
+
+  // Axis Functions
+  var bottomAxis = d3.axisBottom(xLinearScale);
+  var leftAxis = d3.axisLeft(yLinearScale);
+
+  // Append Axes Using Functions
+  chartGroup.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(bottomAxis);
+
+  chartGroup.append("g")
+    .call(leftAxis);
   }).catch(function(error) {
     console.log(error);
   });
 
-
-
-
-
-
-
-
-
-
-  //     // Step 2: Create scale functions
-//     // ==============================
-//     var xLinearScale = d3.scaleLinear()
-//       .domain([20, d3.max(hairData, d => d.hair_length)])
-//       .range([0, width]);
-// ​
-//     var yLinearScale = d3.scaleLinear()
-//       .domain([0, d3.max(hairData, d => d.num_hits)])
-//       .range([height, 0]);
-// ​
-//     // Step 3: Create axis functions
-//     // ==============================
-//     var bottomAxis = d3.axisBottom(xLinearScale);
-//     var leftAxis = d3.axisLeft(yLinearScale);
-// ​
-//     // Step 4: Append Axes to the chart
-//     // ==============================
-//     chartGroup.append("g")
-//       .attr("transform", `translate(0, ${height})`)
-//       .call(bottomAxis);
-// ​
-//     chartGroup.append("g")
-//       .call(leftAxis);
 // ​
 //     // Step 5: Create Circles
 //     // ==============================
