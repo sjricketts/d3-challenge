@@ -77,24 +77,21 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   // Create toolTip
   var toolTip = d3
     .tip()
-    .attr("class", "tooltip")
+    .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function (d) {
       return `${d.abbr}`;
     });
+
+  // Call toolTip in the chart
+  chartGroup.call(toolTip);
+
 }).catch(function(error) {
     console.log(error);
-  });
+});
 
 // ​
-
-// ​
-//     // Step 7: Create tooltip in the chart
-//     // ==============================
-//     chartGroup.call(toolTip);
-// ​
-//     // Step 8: Create event listeners to display and hide the tooltip
-//     // ==============================
+//     // Event listeners for the tooltip
 //     circlesGroup.on("click", function(data) {
 //       toolTip.show(data, this);
 //     })
