@@ -19,7 +19,7 @@ var height = svgHeight - margin.top - margin.bottom;
 
 // svg wrapper
 var svg = d3
-  .select(".chart")
+  .select("#scatter")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -42,12 +42,12 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   // Scale Functions
   var xLinearScale = d3
     .scaleLinear()
-    .domain([0, d3.max(censusData, (d) => d.poverty)])
+    .domain([8, d3.max(censusData, (d) => d.poverty) + 2])
     .range([0, width]);
 
   var yLinearScale = d3
     .scaleLinear()
-    .domain([0, d3.max(censusData, (d) => d.healthcare)])
+    .domain([2, d3.max(censusData, (d) => d.healthcare) + 2])
     .range([height, 0]);
 
   // Axis Functions
@@ -55,37 +55,39 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   var leftAxis = d3.axisLeft(yLinearScale);
 
   // Append Axes Using Functions
-  chartGroup.append("g")
+  chartGroup
+    .append("g")
     .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
 
-  chartGroup.append("g")
-    .call(leftAxis);
-  }).catch(function(error) {
+  chartGroup.append("g").call(leftAxis);
+
+  // Create circlesGroup
+  var circlesGroup = chartGroup
+    .selectAll("circle")
+    .data(censusData)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => xLinearScale(d.poverty))
+    .attr("cy", (d) => yLinearScale(d.healthcare))
+    .attr("r", "15")
+    .attr("fill", "pink")
+    .attr("opacity", ".5");
+
+  // Create toolTip
+  var toolTip = d3
+    .tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .html(function (d) {
+      return `${d.abbr}`;
+    });
+}).catch(function(error) {
     console.log(error);
   });
 
 // ​
-//     // Step 5: Create Circles
-//     // ==============================
-//     var circlesGroup = chartGroup.selectAll("circle")
-//     .data(hairData)
-//     .enter()
-//     .append("circle")
-//     .attr("cx", d => xLinearScale(d.hair_length))
-//     .attr("cy", d => yLinearScale(d.num_hits))
-//     .attr("r", "15")
-//     .attr("fill", "pink")
-//     .attr("opacity", ".5");
-// ​
-//     // Step 6: Initialize tool tip
-//     // ==============================
-//     var toolTip = d3.tip()
-//       .attr("class", "tooltip")
-//       .offset([80, -60])
-//       .html(function(d) {
-//         return (`${d.rockband}<br>Hair length: ${d.hair_length}<br>Hits: ${d.num_hits}`);
-//       });
+
 // ​
 //     // Step 7: Create tooltip in the chart
 //     // ==============================
