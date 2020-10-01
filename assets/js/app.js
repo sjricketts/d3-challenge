@@ -78,6 +78,7 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   var toolTip = d3
     .tip()
     .attr("class", "d3-tip")
+    .attr("r", 20)
     .offset([10, 30])
     .html(function (d) {
       return `<strong>${d.state}</strong><br>Poverty Rate: ${d.poverty}<br>Uninsured Rate: ${d.healthcare}`;
@@ -87,8 +88,8 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   chartGroup.call(toolTip);
 
   // Event listeners for the tooltip
-  // Click event
-  circlesGroup.on("click", function(data) {
+  // Mouseover event
+  circlesGroup.on("mouseover", function(data) {
     toolTip.show(data, this);
     })
     // Mouseout event
