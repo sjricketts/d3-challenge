@@ -81,7 +81,7 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
     .attr("r", 20)
     .offset([10, 30])
     .html(function (d) {
-      return `<strong>${d.state}</strong><br>Poverty Rate: ${d.poverty}<br>Uninsured Rate: ${d.healthcare}`;
+      return `<strong>${d.state}</strong><br>Poverty Rate: ${d.poverty}<br>No Healthcare Rate: ${d.healthcare}`;
     });
 
   // Call toolTip in the chart
@@ -96,20 +96,20 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
     .on("mouseout", function(data, index) {
       toolTip.hide(data);
     });
+  
+  // Create axes labels
+  chartGroup.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left + 40)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .attr("class", "axisText")
+    .text("No Healthcare (%)");
+
+  chartGroup.append("text")
+    .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+    .attr("class", "axisText")
+    .text("Poverty (%)");
 }).catch(function(error) {
     console.log(error);
 });
-
-//     // Create axes labels
-//     chartGroup.append("text")
-//       .attr("transform", "rotate(-90)")
-//       .attr("y", 0 - margin.left + 40)
-//       .attr("x", 0 - (height / 2))
-//       .attr("dy", "1em")
-//       .attr("class", "axisText")
-//       .text("Number of Billboard 100 Hits");
-// ​
-//     chartGroup.append("text")
-//       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
-//       .attr("class", "axisText")
-//       .text("Hair Metal Band Hair Length (inches)");
