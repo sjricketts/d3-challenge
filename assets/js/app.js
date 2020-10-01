@@ -71,16 +71,16 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
     .attr("cx", (d) => xLinearScale(d.poverty))
     .attr("cy", (d) => yLinearScale(d.healthcare))
     .attr("r", "15")
-    .attr("fill", "pink")
+    .attr("fill", "blue")
     .attr("opacity", ".5");
 
   // Create toolTip
   var toolTip = d3
     .tip()
     .attr("class", "d3-tip")
-    .offset([80, -60])
+    .offset([10, 30])
     .html(function (d) {
-      return (`${d.abbr}`);
+      return `<strong>${d.state}</strong><br>Poverty Rate: ${d.poverty}<br>Uninsured Rate: ${d.healthcare}`;
     });
 
   // Call toolTip in the chart
