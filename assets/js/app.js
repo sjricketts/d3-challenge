@@ -1,5 +1,5 @@
 
-// Function to Reponsive Chart
+// Function to make Reponsive Chart
 function makeResponsive() {
   
   // replace SVG area when the browser loads with a resized version of the chart
