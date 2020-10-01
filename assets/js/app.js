@@ -42,12 +42,12 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   // Scale Functions
   var xLinearScale = d3
     .scaleLinear()
-    .domain([8, d3.max(censusData, (d) => d.poverty) + 2])
+    .domain([8, d3.max(censusData, (d) => d.poverty * 1.2)])
     .range([0, width]);
 
   var yLinearScale = d3
     .scaleLinear()
-    .domain([2, d3.max(censusData, (d) => d.healthcare) + 2])
+    .domain([2, d3.max(censusData, (d) => d.healthcare * 1.2)])
     .range([height, 0]);
 
   // Axis Functions
@@ -63,10 +63,10 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   chartGroup.append("g").call(leftAxis);
 
   // Create circlesGroup
-  var circlesGroup = chartGroup
-    .selectAll("circle")
-    .data(censusData)
-    .enter()
+  var circlesGroup = chartGroup.selectAll("circle").data(censusData).enter();
+
+  // creating the circles
+  circlesGroup
     .append("circle")
     .attr("cx", (d) => xLinearScale(d.poverty))
     .attr("cy", (d) => yLinearScale(d.healthcare))
@@ -74,11 +74,36 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
     .attr("fill", "blue")
     .attr("opacity", ".5");
 
+  // creating the text for the circles
+  circlesGroup
+    .append("text")
+    .text(function (d) {
+      return d.abbr;
+    })
+    .attr("dx", (d) => xLinearScale(d.poverty))
+    .attr("dy", (d) => yLinearScale(d.healthcare))
+    .attr("font-size", "9")
+    .attr("class", "stateText")
+    .on("mouseover", function (data) {
+    toolTip.show(data, this);
+    })
+    // Mouseout event
+      .on("mouseout", function (data, index) {
+        toolTip.hide(data);
+    });
+  // .on("mouseover", function (data, index) {
+  //   toolTip.show(data, this);
+  //   d3.select(this).style("stroke", "#323232");
+  // })
+  // .on("mouseout", function (data, index) {
+  //   toolTip.hide(data, this);
+  //   d3.select(this).style("stroke", "#e3e3e3");
+  // });
+  // Event listeners for the tooltip
+  // Mouseover event
   // Create toolTip
-  var toolTip = d3
-    .tip()
+  var toolTip = d3.tip()
     .attr("class", "d3-tip")
-    .attr("r", 20)
     .offset([10, 30])
     .html(function (d) {
       return `<strong>${d.state}</strong><br>Poverty Rate: ${d.poverty}<br>No Healthcare Rate: ${d.healthcare}`;
@@ -87,26 +112,18 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
   // Call toolTip in the chart
   chartGroup.call(toolTip);
 
-  // Event listeners for the tooltip
-  // Mouseover event
-  circlesGroup.on("mouseover", function(data) {
-    toolTip.show(data, this);
-    })
-    // Mouseout event
-    .on("mouseout", function(data, index) {
-      toolTip.hide(data);
-    });
-  
   // Create axes labels
-  chartGroup.append("text")
+  chartGroup
+    .append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left + 40)
-    .attr("x", 0 - (height / 2))
+    .attr("x", 0 - height / 2)
     .attr("dy", "1em")
     .attr("class", "axisText")
     .text("No Healthcare (%)");
 
-  chartGroup.append("text")
+  chartGroup
+    .append("text")
     .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
     .attr("class", "axisText")
     .text("Poverty (%)");
