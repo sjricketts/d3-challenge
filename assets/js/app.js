@@ -80,26 +80,25 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
     .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function (d) {
-      return `${d.abbr}`;
+      return (`${d.abbr}`);
     });
 
   // Call toolTip in the chart
   chartGroup.call(toolTip);
 
+  // Event listeners for the tooltip
+  // Click event
+  circlesGroup.on("click", function(data) {
+    toolTip.show(data, this);
+    })
+    // Mouseout event
+    .on("mouseout", function(data, index) {
+      toolTip.hide(data);
+    });
 }).catch(function(error) {
     console.log(error);
 });
 
-// ​
-//     // Event listeners for the tooltip
-//     circlesGroup.on("click", function(data) {
-//       toolTip.show(data, this);
-//     })
-//       // onmouseout event
-//       .on("mouseout", function(data, index) {
-//         toolTip.hide(data);
-//       });
-// ​
 //     // Create axes labels
 //     chartGroup.append("text")
 //       .attr("transform", "rotate(-90)")
